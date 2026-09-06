@@ -1,0 +1,42 @@
+
+
+ChangeOfDeviceFirering = 0.10; 
+
+figure; %making figure
+hold on;
+xlabel('Input (G)');
+ylabel('Amounts');
+%legend('Pure ALOHA', 'Slotted ALOHA');
+
+%these are looped to handle single values, .
+for N = 0:1:20 % devices
+    for M = 20:10:40 % time slots
+        ListOfFiredDevices = [];
+        idles = 0; % counts idle states
+        succ = 0; % counts idle states
+        colls = 0; % counts idle states
+        for amountOfSlots = 0:M
+            DevicesTryingToFireOf = [];
+            for deviceNumber = 0:N
+                if(~ismember(deviceNumber,ListOfFiredDevices))
+                   if(rand() <= ChangeOfDeviceFirering)
+                        DevicesTryingToFireOf(end + 1) = deviceNumber;
+                   end
+                end                
+            end
+            if(length(DevicesTryingToFireOf) == 0)
+                idles = idles + 1;
+            end
+            if(length(DevicesTryingToFireOf) == 1)
+                succ = succ + 1;
+                ListOfFiredDevices = [ListOfFiredDevices, DevicesTryingToFireOf];
+            end
+            if(length(DevicesTryingToFireOf) > 1)
+                colls = colls + 1;
+            end
+        end
+        % Store the results for the current time slot
+        fprintf('Time Slots %d: Fired Devices %d = %s\n', M, length(ListOfFiredDevices), mat2str(ListOfFiredDevices));
+        plot(N, idles, N, succ, N, colls);
+    end
+end

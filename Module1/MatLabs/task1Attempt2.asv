@@ -1,0 +1,57 @@
+
+NumberOfDevices = 20:40;
+NumberOfTimeSlots = 15:35;
+
+averageFracOfIdle = [];
+averageFracOfSucc = [];
+averageFracOfColl = [];
+
+
+for N = NumberOfDevices
+    idleList = [];
+    succList = [];
+    collList = [];
+for M = NumberOfTimeSlots 
+    timeSlotList = [];
+    for index = 0:M 
+        timeSlotList(index+1) = 0;
+    end
+for deviceNumber = 0:N % devices choose random slot to use
+    randomM = randi(M);
+    timeSlotList(randomM) = timeSlotList(randomM) + 1;
+end
+idles = 0; % counts idle states
+succ = 0; % counts succ states
+colls = 0; % counts colls states
+for timeSlot = 1:length(timeSlotList) %counting states
+    if(timeSlotList(timeSlot) == 0)
+        idles = idles + 1;
+    end
+    if(timeSlotList(timeSlot) == 1)
+        succ = succ + 1;
+    end
+    if(timeSlotList(timeSlot) > 1)
+        colls = colls + 1;
+    end
+end
+
+idleList(end + 1) = idles/M; %storing state fractions to list
+succList(end + 1) = succ/M;
+collList(end + 1) = colls/M;
+end
+averageFracOfIdle(end + 1) = sum(idleList)/length(idleList); %storing averages to list
+averageFracOfSucc(end + 1) = sum(succList)/length(succList);
+averageFracOfColl(end + 1) = sum(collList)/length(collList);
+end
+
+figure; %making figure
+hold on;
+xlabel('Number of devices');
+ylabel('Fraction of TimeSlots');
+
+% Plot the results
+plot(0:(length(averageFracOfIdle)-1), averageFracOfIdle, 'b-o', 'DisplayName', 'Idle States');
+plot(0:(length(averageFracOfSucc)-1), averageFracOfSucc, 'g-o', 'DisplayName', 'Successful Fires');
+plot(0:(length(averageFracOfColl)-1), averageFracOfColl, 'r-o', 'DisplayName', 'Collisions');
+legend('show');
+hold off;
